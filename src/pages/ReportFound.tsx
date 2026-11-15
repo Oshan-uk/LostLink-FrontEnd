@@ -1,9 +1,12 @@
 import { useState, type FormEvent, type ChangeEvent } from "react";
 import { useNavigate } from "react-router-dom";
-import { Package, MapPin, CalendarDays, Image } from "lucide-react";
+import { Package, MapPin, CalendarDays } from "lucide-react";
 
 import FormField from "../components/FormField";
-import { createFoundItem } from "../services/item.service";
+import {
+  createFoundItem,
+  uploadItemImage,
+} from "../services/item.service";
 
 const provinces = [
   "Western",
@@ -29,8 +32,10 @@ function ReportFound() {
     city: "",
     specificPlace: "",
     date: "",
-    imageUrl: "",
   });
+
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState("");
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
@@ -46,6 +51,41 @@ function ReportFound() {
       ...previous,
       [name]: value,
     }));
+  };
+
+  const handleImageChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+
+    if (!file) return;
+
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      setError("Only JPEG, PNG and WEBP images are allowed.");
+      event.target.value = "";
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError("Image size must be less than 5MB.");
+      event.target.value = "";
+      return;
+    }
+
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
+
+    setError("");
+    setSelectedImage(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const handleRemoveImage = () => {
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview);
+    }
+
+    setSelectedImage(null);
+    setImagePreview("");
   };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -77,22 +117,19 @@ function ReportFound() {
       return;
     }
 
-    if (formData.imageUrl.trim()) {
-      try {
-        new URL(formData.imageUrl.trim());
-      } catch {
-        setError("Please enter a valid image URL.");
-        return;
-      }
-    }
-
     setIsSubmitting(true);
 
     try {
+      let imageUrl = "";
+
+      if (selectedImage) {
+        imageUrl = await uploadItemImage(selectedImage);
+      }
+
       await createFoundItem({
         ...formData,
         specificPlace: formData.specificPlace.trim(),
-        imageUrl: formData.imageUrl.trim(),
+        imageUrl,
       });
 
       navigate("/");
@@ -136,7 +173,9 @@ function ReportFound() {
           />
 
           <div>
-            <label className="mb-2 block text-sm font-medium">Category</label>
+            <label className="mb-2 block text-sm font-medium">
+              Category
+            </label>
 
             <div className="sk-well rounded-xl p-3">
               <select
@@ -252,14 +291,40 @@ function ReportFound() {
             />
 
             <div className="mt-5">
-              <FormField
-                label="Image URL (Optional)"
-                name="imageUrl"
-                placeholder="https://example.com/image.jpg"
-                icon={Image}
-                value={formData.imageUrl}
-                onChange={handleChange}
-              />
+              <label className="mb-2 block text-sm font-medium">
+                Upload Item Image (Optional)
+              </label>
+
+              <div className="sk-well rounded-xl p-4">
+                <input
+                  type="file"
+                  accept="image/jpeg,image/png,image/webp"
+                  onChange={handleImageChange}
+                  className="w-full text-sm"
+                />
+
+                <p className="mt-2 text-xs opacity-60">
+                  JPEG, PNG or WEBP. Maximum size: 5MB.
+                </p>
+
+                {imagePreview && (
+                  <div className="mt-4">
+                    <img
+                      src={imagePreview}
+                      alt="Selected found item"
+                      className="h-48 w-full rounded-xl object-cover"
+                    />
+
+                    <button
+                      type="button"
+                      onClick={handleRemoveImage}
+                      className="mt-3 text-sm text-red-400"
+                    >
+                      Remove Image
+                    </button>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
@@ -274,7 +339,9 @@ function ReportFound() {
             disabled={isSubmitting}
             className="sk-button w-full rounded-xl px-6 py-4 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isSubmitting ? "Submitting Report..." : "Submit Found Item Report"}
+            {isSubmitting
+              ? "Submitting Report..."
+              : "Submit Found Item Report"}
           </button>
         </form>
       </div>
