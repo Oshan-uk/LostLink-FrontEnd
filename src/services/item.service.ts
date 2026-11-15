@@ -113,3 +113,23 @@ export const createFoundItem = async (
 
   return response.data
 }
+
+
+export const uploadItemImage = async (
+  file: File,
+): Promise<string> => {
+  const formData = new FormData();
+
+  formData.append("image", file);
+
+  const response = await api.post<{
+    success: boolean;
+    message: string;
+    image: {
+      url: string;
+      publicId: string;
+    };
+  }>("/upload", formData);
+
+  return response.data.image.url;
+};
