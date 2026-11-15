@@ -10,6 +10,8 @@ import {
 export interface SearchFilters {
   search: string
   province: string
+  district: string
+  city: string
   category: string
   type: "" | "lost" | "found"
 }
@@ -49,6 +51,8 @@ const categories = [
 function SearchPanel({ onSearch }: SearchPanelProps) {
   const [search, setSearch] = useState("")
   const [province, setProvince] = useState("")
+  const [district, setDistrict] = useState("")
+  const [city, setCity] = useState("")
   const [category, setCategory] = useState("")
   const [type, setType] = useState<"" | "lost" | "found">("")
 
@@ -56,6 +60,8 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
     onSearch({
       search: search.trim(),
       province,
+      district: district.trim(),
+      city: city.trim(),
       category,
       type
     })
@@ -64,12 +70,16 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
   const handleReset = () => {
     setSearch("")
     setProvince("")
+    setDistrict("")
+    setCity("")
     setCategory("")
     setType("")
 
     onSearch({
       search: "",
       province: "",
+      district: "",
+      city: "",
       category: "",
       type: ""
     })
@@ -81,6 +91,8 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
     onSearch({
       search: value,
       province,
+      district: district.trim(),
+      city: city.trim(),
       category,
       type
     })
@@ -96,14 +108,10 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
         }}
       >
 
-        <div className="grid gap-4 lg:grid-cols-[1.5fr_1fr_1fr_auto]">
+        <div className="grid gap-4 lg:grid-cols-3 xl:grid-cols-[1.5fr_1fr_1fr_1fr_1fr_auto]">
 
           <div className="sk-well flex items-center gap-3 px-4 py-3.5">
-
-            <Search
-              className="shrink-0 text-slate-400"
-              size={20}
-            />
+            <Search className="shrink-0 text-slate-400" size={20} />
 
             <input
               type="text"
@@ -112,22 +120,16 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
               placeholder="What are you looking for?"
               className="w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-slate-400"
             />
-
           </div>
 
           <div className="sk-well flex items-center gap-3 px-4 py-3.5">
-
-            <MapPin
-              className="shrink-0 text-slate-400"
-              size={20}
-            />
+            <MapPin className="shrink-0 text-slate-400" size={20} />
 
             <select
               value={province}
               onChange={(event) => setProvince(event.target.value)}
               className="w-full min-w-0 bg-transparent text-sm text-slate-600 outline-none"
             >
-
               <option value="">All Provinces</option>
 
               {provinces.map((item) => (
@@ -135,24 +137,41 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
                   {item}
                 </option>
               ))}
-
             </select>
-
           </div>
 
           <div className="sk-well flex items-center gap-3 px-4 py-3.5">
+            <MapPin className="shrink-0 text-slate-400" size={20} />
 
-            <SlidersHorizontal
-              className="shrink-0 text-slate-400"
-              size={20}
+            <input
+              type="text"
+              value={district}
+              onChange={(event) => setDistrict(event.target.value)}
+              placeholder="District"
+              className="w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-slate-400"
             />
+          </div>
+
+          <div className="sk-well flex items-center gap-3 px-4 py-3.5">
+            <MapPin className="shrink-0 text-slate-400" size={20} />
+
+            <input
+              type="text"
+              value={city}
+              onChange={(event) => setCity(event.target.value)}
+              placeholder="City / Locality"
+              className="w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-slate-400"
+            />
+          </div>
+
+          <div className="sk-well flex items-center gap-3 px-4 py-3.5">
+            <SlidersHorizontal className="shrink-0 text-slate-400" size={20} />
 
             <select
               value={category}
               onChange={(event) => setCategory(event.target.value)}
               className="w-full min-w-0 bg-transparent text-sm text-slate-600 outline-none"
             >
-
               <option value="">All Categories</option>
 
               {categories.map((item) => (
@@ -160,9 +179,7 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
                   {item}
                 </option>
               ))}
-
             </select>
-
           </div>
 
           <button

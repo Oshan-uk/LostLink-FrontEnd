@@ -22,7 +22,6 @@ import SearchPanel, {
 } from "../components/SearchPanel"
 
 import ItemCard from "../components/ItemCard"
-
 import CategoryCard from "../components/CategoryCard"
 import HowItWorks from "../components/HowItWorks"
 import Screws from "../components/Screws"
@@ -90,6 +89,8 @@ function Home() {
   const [filters, setFilters] = useState<SearchFilters>({
     search: "",
     province: "",
+    district: "",
+    city: "",
     category: "",
     type: ""
   })
@@ -103,6 +104,8 @@ function Home() {
   } = useItems({
     search: filters.search,
     province: filters.province,
+    district: filters.district,
+    city: filters.city,
     category: filters.category,
     type: filters.type,
     status: "active",
@@ -120,11 +123,13 @@ function Home() {
   }
 
   const handleCategoryClick = (category: string) => {
-    const newFilters = {
+    const newFilters: SearchFilters = {
       search: "",
       province: "",
+      district: "",
+      city: "",
       category,
-      type: "" as const
+      type: ""
     }
 
     setFilters(newFilters)
@@ -132,6 +137,17 @@ function Home() {
     document.getElementById("recent")?.scrollIntoView({
       behavior: "smooth",
       block: "start"
+    })
+  }
+
+  const handleClearFilters = () => {
+    setFilters({
+      search: "",
+      province: "",
+      district: "",
+      city: "",
+      category: "",
+      type: ""
     })
   }
 
@@ -311,7 +327,12 @@ function Home() {
 
               <p className="sk-emboss-soft mt-3">
 
-                {filters.search || filters.category || filters.province || filters.type
+                {filters.search ||
+                filters.category ||
+                filters.province ||
+                filters.district ||
+                filters.city ||
+                filters.type
                   ? "Matching reports from the LostLink community."
                   : "Discover recently reported belongings."}
 
@@ -404,12 +425,7 @@ function Home() {
 
               <button
                 type="button"
-                onClick={() => handleSearch({
-                  search: "",
-                  province: "",
-                  category: "",
-                  type: ""
-                })}
+                onClick={handleClearFilters}
                 className="sk-btn rounded-xl px-6 py-3 text-sm"
               >
                 Clear Filters
@@ -479,11 +495,8 @@ function Home() {
               to="/register"
               className="sk-btn sk-btn-steel mt-9 px-8 py-4"
             >
-
               Join LostLink
-
               <ArrowRight size={18} />
-
             </Link>
 
           </div>
