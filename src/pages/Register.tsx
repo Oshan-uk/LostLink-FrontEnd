@@ -4,7 +4,7 @@ import { Search, User, Mail, Lock, Phone, ArrowRight } from 'lucide-react'
 
 import FormField from '../components/FormField'
 import Screws from '../components/Screws'
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 
 function Register() {
   const navigate = useNavigate()
