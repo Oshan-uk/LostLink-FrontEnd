@@ -31,6 +31,7 @@ export function useItems(filters: ItemFilters) {
   const fetchItems = useCallback(async () => {
     const currentRequest = ++requestId.current
 
+    setIsLoading(true)
     setError('')
 
     try {
@@ -78,15 +79,17 @@ export function useItems(filters: ItemFilters) {
   ])
 
   useEffect(() => {
-    void fetchItems()
+    const timeoutId = setTimeout(() => {
+      void fetchItems()
+    }, 0)
 
     return () => {
+      clearTimeout(timeoutId)
       requestId.current += 1
     }
   }, [fetchItems])
 
   const refetch = useCallback(async () => {
-    setIsLoading(true)
     await fetchItems()
   }, [fetchItems])
 
