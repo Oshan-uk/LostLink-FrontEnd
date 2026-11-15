@@ -9,7 +9,7 @@ import {
   LayoutDashboard,
 } from 'lucide-react'
 
-import { useAuth } from '../context/AuthContext'
+import { useAuth } from '../hooks/useAuth'
 
 const linkBase =
   'sk-emboss-soft rounded-xl px-4 py-2 text-sm font-bold transition-colors hover:text-cyan-700'
