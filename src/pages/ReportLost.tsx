@@ -1,95 +1,123 @@
-import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
-import {
-  Package,
-  MapPin,
-  CalendarDays,
-  Image
-} from 'lucide-react'
+import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
+import { Package, MapPin, CalendarDays, Image } from "lucide-react";
 
-import FormField from '../components/FormField'
-import { createLostItem } from '../services/item.service'
+import FormField from "../components/FormField";
+import { createLostItem } from "../services/item.service";
 
 const provinces = [
-  'Western',
-  'Central',
-  'Southern',
-  'Northern',
-  'Eastern',
-  'North Western',
-  'North Central',
-  'Uva',
-  'Sabaragamuwa'
-]
+  "Western",
+  "Central",
+  "Southern",
+  "Northern",
+  "Eastern",
+  "North Western",
+  "North Central",
+  "Uva",
+  "Sabaragamuwa",
+];
 
 function ReportLost() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    name: '',
-    category: '',
-    description: '',
-    province: '',
-    district: '',
-    city: '',
-    specificPlace: '',
-    date: '',
-    imageUrl: ''
-  })
+    name: "",
+    category: "",
+    description: "",
+    province: "",
+    district: "",
+    city: "",
+    specificPlace: "",
+    date: "",
+    imageUrl: "",
+  });
 
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   const handleChange = (
-    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    event: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >,
   ) => {
-    const { name, value } = event.target
+    const { name, value } = event.target;
 
     setFormData((previous) => ({
       ...previous,
-      [name]: value
-    }))
-  }
+      [name]: value,
+    }));
+  };
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    setError('')
-    setIsSubmitting(true)
+    setError("");
+
+    const requiredFields = [
+      formData.name,
+      formData.category,
+      formData.description,
+      formData.province,
+      formData.district,
+      formData.city,
+      formData.date,
+    ];
+
+    if (requiredFields.some((field) => !field.trim())) {
+      setError("Please complete all required fields.");
+      return;
+    }
+
+    const selectedDate = new Date(`${formData.date}T00:00:00`);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    if (selectedDate > today) {
+      setError("The date cannot be in the future.");
+      return;
+    }
+
+    if (formData.imageUrl.trim()) {
+      try {
+        new URL(formData.imageUrl.trim());
+      } catch {
+        setError("Please enter a valid image URL.");
+        return;
+      }
+    }
+
+    setIsSubmitting(true);
 
     try {
       await createLostItem({
         ...formData,
         specificPlace: formData.specificPlace.trim(),
-        imageUrl: formData.imageUrl.trim()
-      })
+        imageUrl: formData.imageUrl.trim(),
+      });
 
-      navigate('/')
+      navigate("/");
     } catch (error) {
-      console.error('Lost item submission error:', error)
+      console.error("Lost item submission error:", error);
 
       setError(
         error instanceof Error
           ? error.message
-          : 'Unable to submit your report. Please try again.'
-      )
+          : "Unable to submit your report. Please try again.",
+      );
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <main className="min-h-screen px-4 py-12">
       <div className="mx-auto max-w-3xl">
-
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold">
-            Report a Lost Item
-          </h1>
+          <h1 className="text-3xl font-bold">Report a Lost Item</h1>
 
           <p className="mt-3">
-            Provide the details below to help others identify and return
-            your lost item.
+            Provide the details below to help others identify and return your
+            lost item.
           </p>
         </div>
 
@@ -97,7 +125,6 @@ function ReportLost() {
           onSubmit={handleSubmit}
           className="sk-panel space-y-6 rounded-2xl p-6 md:p-8"
         >
-
           <FormField
             label="Item Name"
             name="name"
@@ -109,9 +136,7 @@ function ReportLost() {
           />
 
           <div>
-            <label className="mb-2 block text-sm font-medium">
-              Category
-            </label>
+            <label className="mb-2 block text-sm font-medium">Category</label>
 
             <div className="sk-well rounded-xl p-3">
               <select
@@ -152,12 +177,9 @@ function ReportLost() {
           </div>
 
           <div className="border-t border-white/10 pt-6">
-            <h2 className="mb-5 text-xl font-semibold">
-              Last Known Location
-            </h2>
+            <h2 className="mb-5 text-xl font-semibold">Last Known Location</h2>
 
             <div className="space-y-5">
-
               <div>
                 <label className="mb-2 block text-sm font-medium">
                   Province
@@ -210,7 +232,6 @@ function ReportLost() {
                 value={formData.specificPlace}
                 onChange={handleChange}
               />
-
             </div>
           </div>
 
@@ -226,7 +247,7 @@ function ReportLost() {
               icon={CalendarDays}
               value={formData.date}
               onChange={handleChange}
-              max={new Date().toISOString().split('T')[0]}
+              max={new Date().toISOString().split("T")[0]}
               required
             />
 
@@ -253,13 +274,12 @@ function ReportLost() {
             disabled={isSubmitting}
             className="sk-button w-full rounded-xl px-6 py-4 font-semibold disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {isSubmitting ? 'Submitting Report...' : 'Submit Lost Item Report'}
+            {isSubmitting ? "Submitting Report..." : "Submit Lost Item Report"}
           </button>
-
         </form>
       </div>
     </main>
-  )
+  );
 }
 
-export default ReportLost
+export default ReportLost;
