@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   FileText,
   Search,
@@ -9,6 +9,9 @@ import {
   MapPin,
   CalendarDays,
   AlertCircle,
+  Trash2,
+  RotateCcw,
+  Pencil,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 
@@ -19,39 +22,93 @@ function Dashboard() {
   const [items, setItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState("");
+
+  const fetchMyItems = useCallback(async () => {
+    try {
+      setError("");
+
+      const response = await api.get<{
+        success: boolean;
+        items: Item[];
+      }>("/items/mine");
+
+      setItems(response.data.items);
+    } catch (error) {
+      console.error("Dashboard reports error:", error);
+      setError("Unable to load your reports. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    let isMounted = true;
-
-    const fetchMyItems = async () => {
-      try {
-        const response = await api.get<{
-          success: boolean;
-          items: Item[];
-        }>("/items/mine");
-
-        if (isMounted) {
-          setItems(response.data.items);
-        }
-      } catch (error) {
-        console.error("Dashboard reports error:", error);
-
-        if (isMounted) {
-          setError("Unable to load your reports. Please try again.");
-        }
-      } finally {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    };
-
-    void fetchMyItems();
+    const timeoutId = setTimeout(() => {
+      void fetchMyItems();
+    }, 0);
 
     return () => {
-      isMounted = false;
+      clearTimeout(timeoutId);
     };
-  }, []);
+  }, [fetchMyItems]);
+
+  const handleMarkReturned = async (item: Item) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to mark "${item.name}" as returned?`,
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setActionLoading(item._id);
+      setSuccessMessage("");
+
+      await api.patch(`/items/${item._id}/returned`);
+
+      setItems((previousItems) =>
+        previousItems.map((previousItem) =>
+          previousItem._id === item._id
+            ? { ...previousItem, status: "returned" }
+            : previousItem,
+        ),
+      );
+
+      setSuccessMessage("Item successfully marked as returned.");
+    } catch (error) {
+      console.error("Mark returned error:", error);
+      window.alert("Unable to update item status. Please try again.");
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
+  // Delete a report
+  const handleDelete = async (item: Item) => {
+    const confirmed = window.confirm(
+      `Are you sure you want to permanently delete "${item.name}"?`,
+    );
+
+    if (!confirmed) return;
+
+    try {
+      setActionLoading(item._id);
+      setSuccessMessage("");
+
+      await api.delete(`/items/${item._id}`);
+
+      setItems((previousItems) =>
+        previousItems.filter((previousItem) => previousItem._id !== item._id),
+      );
+
+      setSuccessMessage("Report successfully deleted.");
+    } catch (error) {
+      console.error("Delete report error:", error);
+      window.alert("Unable to delete this report. Please try again.");
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   const stats = [
     {
@@ -155,6 +212,12 @@ function Dashboard() {
             </span>
           </div>
 
+          {successMessage && (
+            <div className="mb-5 rounded-xl border border-green-500/30 bg-green-500/10 p-4 text-sm text-green-400">
+              {successMessage}
+            </div>
+          )}
+
           {isLoading && (
             <div className="sk-panel rounded-2xl p-10 text-center">
               Loading your reports...
@@ -168,7 +231,10 @@ function Dashboard() {
               <p>{error}</p>
 
               <button
-                onClick={() => window.location.reload()}
+                onClick={() => {
+                  setIsLoading(true);
+                  void fetchMyItems();
+                }}
                 className="sk-btn mt-5 rounded-xl px-5 py-2"
               >
                 Try Again
@@ -222,7 +288,15 @@ function Dashboard() {
                         {item.type}
                       </span>
 
-                      <span className="text-xs opacity-70">{item.status}</span>
+                      <span
+                        className={`text-xs font-bold uppercase ${
+                          item.status === "returned"
+                            ? "text-green-400"
+                            : "text-yellow-400"
+                        }`}
+                      >
+                        {item.status}
+                      </span>
                     </div>
 
                     <h3 className="sk-emboss text-lg font-bold">{item.name}</h3>
@@ -250,6 +324,38 @@ function Dashboard() {
                       View Details
                       <ArrowRight size={16} />
                     </Link>
+
+                    <div className="mt-3 grid grid-cols-2 gap-2">
+                      <Link
+                        to={`/items/${item._id}/edit`}
+                        className="sk-btn sk-btn-steel flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm"
+                      >
+                        <Pencil size={15} />
+                        Edit
+                      </Link>
+
+                      <button
+                        onClick={() => void handleDelete(item)}
+                        disabled={actionLoading === item._id}
+                        className="sk-btn flex items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm text-red-400 disabled:opacity-50"
+                      >
+                        <Trash2 size={15} />
+                        Delete
+                      </button>
+                    </div>
+
+                    {item.status === "active" && (
+                      <button
+                        onClick={() => void handleMarkReturned(item)}
+                        disabled={actionLoading === item._id}
+                        className="sk-btn mt-2 flex w-full items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm disabled:opacity-50"
+                      >
+                        <RotateCcw size={15} />
+                        {actionLoading === item._id
+                          ? "Processing..."
+                          : "Mark as Returned"}
+                      </button>
+                    )}
                   </div>
                 </div>
               ))}
