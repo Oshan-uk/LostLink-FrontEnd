@@ -2,11 +2,9 @@ import { useState, type FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
   Package,
-  Tag,
   MapPin,
   CalendarDays,
-  Image,
-  AlignLeft
+  Image
 } from 'lucide-react'
 
 import FormField from '../components/FormField'

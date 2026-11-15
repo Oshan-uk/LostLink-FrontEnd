@@ -11,6 +11,7 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/dashboard/Dashboard'
 import NotFound from './pages/NotFound'
+import ReportLost from './pages/ReportLost'
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
 
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/report-lost" element={<ReportLost />} />
           </Route>
 
           <Route path="*" element={<NotFound />} />
