@@ -2,6 +2,9 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import ProtectedRoute from './components/ProtectedRoute'
+
+import { AuthProvider } from './context/AuthContext'
 
 import Home from './pages/Home'
 import Login from './pages/Login'
@@ -11,27 +14,27 @@ import NotFound from './pages/NotFound'
 
 function App() {
   return (
-    <BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Navbar />
 
-      <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
 
-      <Routes>
+          <Route path="/login" element={<Login />} />
 
-        <Route path="/" element={<Home />} />
+          <Route path="/register" element={<Register />} />
 
-        <Route path="/login" element={<Login />} />
+          <Route element={<ProtectedRoute />}>
+            <Route path="/dashboard" element={<Dashboard />} />
+          </Route>
 
-        <Route path="/register" element={<Register />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
 
-        <Route path="/dashboard" element={<Dashboard />} />
-
-        <Route path="*" element={<NotFound />} />
-
-      </Routes>
-
-      <Footer />
-
-    </BrowserRouter>
+        <Footer />
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 
