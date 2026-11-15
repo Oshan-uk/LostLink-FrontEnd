@@ -1,4 +1,4 @@
-import api from "../lib/api"
+import api from '../lib/api'
 
 export interface User {
   id: string
@@ -28,11 +28,12 @@ export const registerUser = async (
   data: RegisterData
 ): Promise<AuthResponse> => {
   const response = await api.post<AuthResponse>(
-    "/auth/register",
+    '/auth/register',
     data
   )
 
-  localStorage.setItem("lostlink_token", response.data.token)
+  localStorage.setItem('lostlink_token', response.data.token)
+  localStorage.setItem('lostlink_user', JSON.stringify(response.data.user))
 
   return response.data
 }
@@ -41,15 +42,41 @@ export const loginUser = async (
   data: LoginData
 ): Promise<AuthResponse> => {
   const response = await api.post<AuthResponse>(
-    "/auth/login",
+    '/auth/login',
     data
   )
 
-  localStorage.setItem("lostlink_token", response.data.token)
+  localStorage.setItem('lostlink_token', response.data.token)
+  localStorage.setItem('lostlink_user', JSON.stringify(response.data.user))
 
   return response.data
 }
 
+export const verifyUser = async (): Promise<boolean> => {
+  try {
+    await api.get('/auth/me')
+    return true
+  } catch {
+    return false
+  }
+}
+
 export const logoutUser = (): void => {
-  localStorage.removeItem("lostlink_token")
+  localStorage.removeItem('lostlink_token')
+  localStorage.removeItem('lostlink_user')
+}
+
+export const getStoredUser = (): User | null => {
+  const storedUser = localStorage.getItem('lostlink_user')
+
+  if (!storedUser) {
+    return null
+  }
+
+  try {
+    return JSON.parse(storedUser) as User
+  } catch {
+    localStorage.removeItem('lostlink_user')
+    return null
+  }
 }
