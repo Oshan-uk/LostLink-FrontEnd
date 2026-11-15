@@ -13,6 +13,7 @@ import Dashboard from './pages/dashboard/Dashboard'
 import NotFound from './pages/NotFound'
 import ReportLost from './pages/ReportLost'
 import ReportFound from './pages/ReportFound'
+import ItemDetails from './pages/ItemDetails'
 
 function App() {
   return (
@@ -32,6 +33,8 @@ function App() {
             <Route path="/report-lost" element={<ReportLost />} />
             <Route path="/report-found" element={<ReportFound />} />
           </Route>
+          
+          <Route path="/items/:id" element={<ItemDetails />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
