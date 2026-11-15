@@ -1,32 +1,36 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from "react"
 
 import {
   getItems,
   type Item,
-  type ItemFilters,
-} from '../services/item.service'
+  type ItemFilters
+} from "../services/item.service"
 
 export function useItems(filters: ItemFilters) {
   const [items, setItems] = useState<Item[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const [error, setError] = useState('')
+  const [error, setError] = useState("")
 
-  const [totalPages, setTotalPages] = useState(1)
   const [totalItems, setTotalItems] = useState(0)
+  const [totalPages, setTotalPages] = useState(1)
 
   const fetchItems = useCallback(async () => {
     setIsLoading(true)
-    setError('')
+    setError("")
 
     try {
       const response = await getItems(filters)
 
       setItems(response.items)
-      setTotalPages(response.pagination?.totalPages ?? 1)
-      setTotalItems(response.pagination?.totalItems ?? response.items.length)
-    } catch {
+      setTotalItems(response.totalItems)
+      setTotalPages(response.totalPages)
+    } catch (error) {
+      console.error("Fetch items error:", error)
+
       setItems([])
-      setError('Unable to load reports. Please try again.')
+      setTotalItems(0)
+      setTotalPages(1)
+      setError("Unable to load reports. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -37,8 +41,9 @@ export function useItems(filters: ItemFilters) {
     filters.province,
     filters.district,
     filters.city,
+    filters.status,
     filters.page,
-    filters.limit,
+    filters.limit
   ])
 
   useEffect(() => {
@@ -49,8 +54,8 @@ export function useItems(filters: ItemFilters) {
     items,
     isLoading,
     error,
-    totalPages,
     totalItems,
-    refetch: fetchItems,
+    totalPages,
+    refetch: fetchItems
   }
 }
