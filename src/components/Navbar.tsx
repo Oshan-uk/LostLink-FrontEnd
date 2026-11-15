@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Link, NavLink, useLocation } from 'react-router-dom'
+import { useState } from 'react'
+import { Link, NavLink,  } from 'react-router-dom'
 
 import {
   Search,
@@ -19,16 +19,10 @@ function Navbar() {
 
   const { user, isAuthenticated, isLoading, logout } = useAuth()
 
-  const location = useLocation()
-
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
     `${linkBase} ${isActive ? 'sk-pressed' : ''}`
 
   const close = () => setMenuOpen(false)
-
-  useEffect(() => {
-    close()
-  }, [location.pathname, location.hash])
 
   const handleLogout = () => {
     logout()
