@@ -1,119 +1,127 @@
-import api from "../lib/api"
-
+import api from "../lib/api";
 
 export interface Item {
-  _id: string
-  name: string
-  category: string
-  description: string
-  type: "lost" | "found"
-  province: string
-  district: string
-  city: string
-  specificPlace?: string
-  date: string
-  imageUrl?: string
-  status: "active" | "returned"
+  _id: string;
+  name: string;
+  category: string;
+  description: string;
+  type: "lost" | "found";
+  province: string;
+  district: string;
+  city: string;
+  specificPlace?: string;
+  date: string;
+  imageUrl?: string;
+  status: "active" | "returned";
   user?: {
-    _id?: string
-    name: string
-  } | string
-  createdAt: string
-  updatedAt: string
+    _id?: string;
+    name: string;
+  } | string;
+  createdAt: string;
+  updatedAt: string;
 }
-
-
 
 export interface ItemFormData {
-  name: string
-  category: string
-  description: string
-  province: string
-  district: string
-  city: string
-  specificPlace?: string
-  date: string
-  imageUrl?: string
+  name: string;
+  category: string;
+  description: string;
+  province: string;
+  district: string;
+  city: string;
+  specificPlace?: string;
+  date: string;
+  imageUrl?: string;
 }
-
-
 
 export interface ItemFilters {
-  search?: string
-  type?: "lost" | "found" | ""
-  category?: string
-  province?: string
-  district?: string
-  city?: string
-  status?: "active" | "returned" | "all"
-  page?: number
-  limit?: number
+  search?: string;
+  type?: "lost" | "found" | "";
+  category?: string;
+  province?: string;
+  district?: string;
+  city?: string;
+  status?: "active" | "returned" | "all";
+  page?: number;
+  limit?: number;
 }
 
-
 export interface ItemListResponse {
-  success: boolean
-  message?: string
-  totalItems: number
-  currentPage: number
-  totalPages: number
-  items: Item[]
+  success: boolean;
+  message?: string;
+  totalItems: number;
+  currentPage: number;
+  totalPages: number;
+  items: Item[];
 }
 
 export interface ItemResponse {
-  success: boolean
-  message: string
-  item: Item
+  success: boolean;
+  message: string;
+  item: Item;
 }
 
+// Smart Matching interfaces
+export interface PotentialMatch {
+  item: Item;
+  matchScore: number;
+  matchReasons: string[];
+}
 
+export interface PotentialMatchesResponse {
+  success: boolean;
+  totalMatches: number;
+  matches: PotentialMatch[];
+}
 
 export const getItems = async (
-  filters: ItemFilters = {}
+  filters: ItemFilters = {},
 ): Promise<ItemListResponse> => {
   const response = await api.get<ItemListResponse>("/items", {
-    params: filters
-  })
+    params: filters,
+  });
 
-  return response.data
-}
-
-
+  return response.data;
+};
 
 export const getItemById = async (
-  id: string
+  id: string,
 ): Promise<Item> => {
-  const response = await api.get<ItemResponse>(`/items/${id}`)
+  const response = await api.get<ItemResponse>(`/items/${id}`);
 
-  return response.data.item
-}
+  return response.data.item;
+};
 
+export const getPotentialMatches = async (
+  id: string,
+): Promise<PotentialMatchesResponse> => {
+  const response = await api.get<PotentialMatchesResponse>(
+    `/items/${id}/matches`,
+  );
 
+  return response.data;
+};
 
 export const createLostItem = async (
-  itemData: ItemFormData
+  itemData: ItemFormData,
 ): Promise<ItemResponse> => {
   const response = await api.post<ItemResponse>(
     "/items/lost",
-    itemData
-  )
+    itemData,
+  );
 
-  return response.data
-}
-
-
+  return response.data;
+};
 
 export const createFoundItem = async (
-  itemData: ItemFormData
+  itemData: ItemFormData,
 ): Promise<ItemResponse> => {
   const response = await api.post<ItemResponse>(
     "/items/found",
-    itemData
-  )
+    itemData,
+  );
 
-  return response.data
-}
-
+  return response.data;
+};
 
 export const uploadItemImage = async (
   file: File,
