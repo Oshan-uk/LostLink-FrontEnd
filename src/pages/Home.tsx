@@ -95,6 +95,10 @@ function Home() {
     type: ""
   })
 
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const ITEMS_PER_PAGE = 6
+
   const {
     items,
     isLoading,
@@ -109,12 +113,15 @@ function Home() {
     category: filters.category,
     type: filters.type,
     status: "active",
-    page: 1,
-    limit: 6
+    page: currentPage,
+    limit: ITEMS_PER_PAGE
   })
+
+  const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE)
 
   const handleSearch = (newFilters: SearchFilters) => {
     setFilters(newFilters)
+    setCurrentPage(1)
 
     document.getElementById("recent")?.scrollIntoView({
       behavior: "smooth",
@@ -133,6 +140,7 @@ function Home() {
     }
 
     setFilters(newFilters)
+    setCurrentPage(1)
 
     document.getElementById("recent")?.scrollIntoView({
       behavior: "smooth",
@@ -149,11 +157,27 @@ function Home() {
       category: "",
       type: ""
     })
+
+    setCurrentPage(1)
+  }
+
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages || page === currentPage) {
+      return
+    }
+
+    setCurrentPage(page)
+
+    document.getElementById("recent")?.scrollIntoView({
+      behavior: "smooth",
+      block: "start"
+    })
   }
 
   return (
     <main>
 
+      {/* Hero Section */}
       <section className="sk-hero relative">
 
         <div className="mx-auto max-w-7xl px-5 pb-32 pt-20 sm:pb-36 sm:pt-24 lg:px-8 lg:pb-40 lg:pt-32">
@@ -238,6 +262,7 @@ function Home() {
 
       </section>
 
+      {/* Search Section */}
       <section
         id="search"
         className="relative z-10 mx-auto -mt-16 max-w-7xl px-5 sm:-mt-24 lg:px-8"
@@ -247,6 +272,7 @@ function Home() {
 
       </section>
 
+      {/* Categories Section */}
       <section
         id="categories"
         className="py-20 sm:py-24"
@@ -306,6 +332,7 @@ function Home() {
 
       </section>
 
+      {/* Recent Reports Section */}
       <section
         id="recent"
         className="sk-tray scroll-mt-24 py-20 sm:py-24"
@@ -368,6 +395,7 @@ function Home() {
 
           </div>
 
+          {/* Loading State */}
           {isLoading ? (
 
             <div className="flex min-h-64 flex-col items-center justify-center gap-4">
@@ -385,6 +413,7 @@ function Home() {
 
           ) : error ? (
 
+            /* Error State */
             <div className="sk-panel flex min-h-64 flex-col items-center justify-center gap-4 rounded-2xl p-8 text-center">
 
               <p className="sk-emboss text-lg font-bold">
@@ -407,6 +436,7 @@ function Home() {
 
           ) : items.length === 0 ? (
 
+            /* Empty State */
             <div className="sk-panel flex min-h-64 flex-col items-center justify-center gap-4 rounded-2xl p-8 text-center">
 
               <Package
@@ -435,6 +465,7 @@ function Home() {
 
           ) : (
 
+            /* Reports Grid */
             <div className="grid gap-7 sm:grid-cols-2 lg:grid-cols-3">
 
               {items.map((item) => (
@@ -450,13 +481,75 @@ function Home() {
 
           )}
 
-          {!isLoading && !error && totalItems > items.length && (
+          {/* Pagination */}
+          {!isLoading && !error && totalPages > 1 && (
 
-            <div className="mt-10 text-center">
+            <div className="mt-12 flex flex-wrap items-center justify-center gap-3">
+
+              {/* Previous Button */}
+              <button
+                type="button"
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="sk-pill px-4 py-2 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Previous
+              </button>
+
+              {/* Page Numbers */}
+              {Array.from(
+                { length: totalPages },
+                (_, index) => index + 1
+              ).map((pageNumber) => (
+
+                <button
+                  key={pageNumber}
+                  type="button"
+                  onClick={() => handlePageChange(pageNumber)}
+                  aria-current={currentPage === pageNumber ? "page" : undefined}
+                  className={`sk-pill min-w-10 px-3 py-2 text-sm font-bold ${
+                    currentPage === pageNumber ? "sk-pressed" : ""
+                  }`}
+                >
+                  {pageNumber}
+                </button>
+
+              ))}
+
+              {/* Next Button */}
+              <button
+                type="button"
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="sk-pill px-4 py-2 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Next
+              </button>
+
+            </div>
+
+          )}
+
+          {/* Report Count */}
+          {!isLoading && !error && totalItems > 0 && (
+
+            <div className="mt-8 text-center">
 
               <p className="sk-emboss-soft text-sm">
-                Showing {items.length} of {totalItems} reports.
+                Showing {Math.min(
+                  (currentPage - 1) * ITEMS_PER_PAGE + 1,
+                  totalItems
+                )}–{Math.min(
+                  currentPage * ITEMS_PER_PAGE,
+                  totalItems
+                )} of {totalItems} reports.
               </p>
+
+              {totalPages > 1 && (
+                <p className="sk-emboss-soft mt-1 text-xs">
+                  Page {currentPage} of {totalPages}
+                </p>
+              )}
 
             </div>
 
@@ -466,8 +559,10 @@ function Home() {
 
       </section>
 
+      {/* How It Works */}
       <HowItWorks />
 
+      {/* Call To Action */}
       <section className="px-5 pb-20 sm:pb-24 lg:px-8">
 
         <div className="sk-blue-panel relative mx-auto max-w-7xl overflow-hidden rounded-3xl px-7 py-16 text-center sm:px-16">
