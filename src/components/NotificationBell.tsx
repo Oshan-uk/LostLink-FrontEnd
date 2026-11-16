@@ -36,7 +36,9 @@ function NotificationBell() {
       const data = await getNotifications();
 
       setNotifications(data);
-      setUnreadCount(data.filter((notification) => !notification.isRead).length);
+      setUnreadCount(
+        data.filter((notification) => !notification.isRead).length,
+      );
     } catch (error) {
       console.error("Failed to fetch notifications:", error);
     } finally {
@@ -120,22 +122,17 @@ function NotificationBell() {
   };
 
   // Open matching report
-  const handleOpenNotification = async (
-    notification: Notification,
-  ) => {
+  const handleOpenNotification = async (notification: Notification) => {
     if (!notification.isRead) {
       await handleMarkAsRead(notification._id);
     }
 
     setIsOpen(false);
 
-    // The recipient owns the existing matched report.
-    // Open that report so they can view its potential matches.
-    const targetId =
-      notification.matchedItem?._id || notification.item?._id;
+    const matchedItemId = notification.item?._id;
 
-    if (targetId) {
-      navigate(`/items/${targetId}`);
+    if (matchedItemId) {
+      navigate(`/items/${matchedItemId}`);
     }
   };
 
@@ -152,7 +149,6 @@ function NotificationBell() {
 
   return (
     <div className="relative">
-
       {/* Notification Bell */}
       <button
         type="button"
@@ -181,10 +177,8 @@ function NotificationBell() {
           />
 
           <div className="sk-metal absolute right-0 top-14 z-50 w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-slate-300/40 shadow-2xl">
-
             {/* Header */}
             <div className="flex items-center justify-between border-b border-slate-400/30 px-4 py-4">
-
               <div>
                 <h3 className="sk-emboss text-base font-extrabold">
                   Notifications
@@ -196,7 +190,6 @@ function NotificationBell() {
               </div>
 
               <div className="flex items-center gap-2">
-
                 {unreadCount > 0 && (
                   <button
                     type="button"
@@ -221,16 +214,13 @@ function NotificationBell() {
                 >
                   <X size={17} />
                 </button>
-
               </div>
             </div>
 
             {/* Notification List */}
             <div className="max-h-100 overflow-y-auto">
-
               {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-12">
-
                   <LoaderCircle
                     size={28}
                     className="animate-spin text-cyan-600"
@@ -239,11 +229,9 @@ function NotificationBell() {
                   <p className="sk-emboss-soft mt-3 text-sm">
                     Loading notifications...
                   </p>
-
                 </div>
               ) : notifications.length === 0 ? (
                 <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
-
                   <div className="sk-well flex h-16 w-16 items-center justify-center rounded-2xl">
                     <Bell size={28} className="sk-emboss-soft" />
                   </div>
@@ -255,21 +243,16 @@ function NotificationBell() {
                   <p className="sk-emboss-soft mt-2 text-xs">
                     We'll notify you when a potential item match is found.
                   </p>
-
                 </div>
               ) : (
                 notifications.map((notification) => (
                   <div
                     key={notification._id}
                     className={`border-b border-slate-400/20 p-4 transition-colors ${
-                      notification.isRead
-                        ? ""
-                        : "bg-cyan-500/5"
+                      notification.isRead ? "" : "bg-cyan-500/5"
                     }`}
                   >
-
                     <div className="flex gap-3">
-
                       {/* Icon */}
                       <div className="sk-well flex h-10 w-10 shrink-0 items-center justify-center rounded-xl">
                         <Package size={19} className="text-cyan-700" />
@@ -277,9 +260,7 @@ function NotificationBell() {
 
                       {/* Content */}
                       <div className="min-w-0 flex-1">
-
                         <div className="flex items-start justify-between gap-2">
-
                           <h4 className="sk-emboss text-sm font-extrabold">
                             {notification.title}
                           </h4>
@@ -287,7 +268,6 @@ function NotificationBell() {
                           {!notification.isRead && (
                             <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-cyan-500" />
                           )}
-
                         </div>
 
                         <p className="sk-emboss-soft mt-1 text-xs leading-relaxed">
@@ -300,7 +280,6 @@ function NotificationBell() {
 
                         {/* Actions */}
                         <div className="mt-3 flex flex-wrap items-center gap-2">
-
                           <button
                             type="button"
                             onClick={() =>
@@ -327,25 +306,18 @@ function NotificationBell() {
 
                           <button
                             type="button"
-                            onClick={() =>
-                              void handleDelete(notification._id)
-                            }
+                            onClick={() => void handleDelete(notification._id)}
                             title="Delete notification"
                             className="sk-btn flex h-8 w-8 items-center justify-center rounded-lg text-red-500"
                           >
                             <Trash2 size={15} />
                           </button>
-
                         </div>
-
                       </div>
-
                     </div>
-
                   </div>
                 ))
               )}
-
             </div>
 
             {/* Footer */}
@@ -356,11 +328,9 @@ function NotificationBell() {
                 </p>
               </div>
             )}
-
           </div>
         </>
       )}
-
     </div>
   );
 }
