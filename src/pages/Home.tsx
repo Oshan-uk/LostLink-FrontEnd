@@ -85,7 +85,7 @@ const trust = [
 ];
 
 function Home() {
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated } = useAuth();
 
   const [filters, setFilters] = useState<SearchFilters>({
     search: "",
