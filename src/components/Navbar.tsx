@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link, NavLink,  } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 
 import {
   Search,
@@ -7,6 +7,7 @@ import {
   X,
   LogOut,
   LayoutDashboard,
+  UserRound,
 } from 'lucide-react'
 
 import { useAuth } from '../hooks/useAuth'
@@ -34,9 +35,10 @@ function Navbar() {
 
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 lg:px-8">
 
+        {/* Logo */}
         <Link to="/" className="flex items-center gap-3" onClick={close}>
 
-          <span className="sk-gem h-11 w-11">
+          <span className="sk-gem flex h-11 w-11 items-center justify-center">
             <Search size={22} strokeWidth={2.5} />
           </span>
 
@@ -52,6 +54,7 @@ function Navbar() {
 
         </Link>
 
+        {/* Desktop Navigation */}
         <nav className="hidden items-center gap-2 md:flex">
 
           <NavLink to="/" className={navLinkClass}>
@@ -68,6 +71,7 @@ function Navbar() {
 
         </nav>
 
+        {/* Desktop Account Actions */}
         <div className="hidden items-center gap-3 md:flex">
 
           {!isLoading && (
@@ -76,6 +80,14 @@ function Navbar() {
                 <span className="sk-emboss-soft max-w-32 truncate text-sm font-bold">
                   Hi, {user?.name}
                 </span>
+
+                <Link
+                  to="/profile"
+                  className="sk-btn rounded-xl px-4 py-2.5 text-sm"
+                >
+                  <UserRound size={17} />
+                  Profile
+                </Link>
 
                 <Link
                   to="/dashboard"
@@ -115,6 +127,7 @@ function Navbar() {
 
         </div>
 
+        {/* Mobile Menu Button */}
         <button
           type="button"
           onClick={() => setMenuOpen((previous) => !previous)}
@@ -128,11 +141,12 @@ function Navbar() {
 
       </div>
 
+      {/* Mobile Navigation */}
       <div
         id="mobile-navigation"
         className={`overflow-hidden transition-all duration-300 md:hidden ${
           menuOpen
-            ? 'visible max-h-[35rem] opacity-100'
+            ? 'visible max-h-140 opacity-100'
             : 'invisible max-h-0 opacity-0'
         }`}
       >
@@ -177,6 +191,15 @@ function Navbar() {
                     {user?.name}
                   </p>
                 </div>
+
+                <Link
+                  to="/profile"
+                  onClick={close}
+                  className="sk-btn flex w-full items-center justify-center gap-2 rounded-xl py-3"
+                >
+                  <UserRound size={17} />
+                  My Profile
+                </Link>
 
                 <Link
                   to="/dashboard"
