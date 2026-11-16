@@ -7,6 +7,11 @@ import {
   RotateCcw
 } from "lucide-react"
 
+import {
+  sriLankaLocations,
+  sriLankaProvinces
+} from "../data/sriLankaLocations"
+
 export interface SearchFilters {
   search: string
   province: string
@@ -27,18 +32,6 @@ const popularSearches = [
   "Laptop"
 ]
 
-const provinces = [
-  "Western",
-  "Central",
-  "Southern",
-  "Northern",
-  "Eastern",
-  "North Western",
-  "North Central",
-  "Uva",
-  "Sabaragamuwa"
-]
-
 const categories = [
   "Electronics",
   "Documents",
@@ -56,11 +49,15 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
   const [category, setCategory] = useState("")
   const [type, setType] = useState<"" | "lost" | "found">("")
 
+  const availableDistricts = province
+    ? sriLankaLocations[province] || []
+    : []
+
   const handleSearch = () => {
     onSearch({
       search: search.trim(),
       province,
-      district: district.trim(),
+      district,
       city: city.trim(),
       category,
       type
@@ -91,7 +88,7 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
     onSearch({
       search: value,
       province,
-      district: district.trim(),
+      district,
       city: city.trim(),
       category,
       type
@@ -110,6 +107,7 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
 
         <div className="grid gap-4 lg:grid-cols-3 xl:grid-cols-[1.5fr_1fr_1fr_1fr_1fr_auto]">
 
+          {/* Keyword Search */}
           <div className="sk-well flex items-center gap-3 px-4 py-3.5">
             <Search className="shrink-0 text-slate-400" size={20} />
 
@@ -122,17 +120,21 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
             />
           </div>
 
+          {/* Province */}
           <div className="sk-well flex items-center gap-3 px-4 py-3.5">
             <MapPin className="shrink-0 text-slate-400" size={20} />
 
             <select
               value={province}
-              onChange={(event) => setProvince(event.target.value)}
+              onChange={(event) => {
+                setProvince(event.target.value)
+                setDistrict("")
+              }}
               className="w-full min-w-0 bg-transparent text-sm text-slate-600 outline-none"
             >
               <option value="">All Provinces</option>
 
-              {provinces.map((item) => (
+              {sriLankaProvinces.map((item) => (
                 <option key={item} value={item}>
                   {item}
                 </option>
@@ -140,18 +142,29 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
             </select>
           </div>
 
+          {/* District */}
           <div className="sk-well flex items-center gap-3 px-4 py-3.5">
             <MapPin className="shrink-0 text-slate-400" size={20} />
 
-            <input
-              type="text"
+            <select
               value={district}
               onChange={(event) => setDistrict(event.target.value)}
-              placeholder="District"
-              className="w-full min-w-0 bg-transparent text-sm outline-none placeholder:text-slate-400"
-            />
+              disabled={!province}
+              className="w-full min-w-0 bg-transparent text-sm text-slate-600 outline-none disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              <option value="">
+                {province ? "All Districts" : "Select Province First"}
+              </option>
+
+              {availableDistricts.map((item) => (
+                <option key={item} value={item}>
+                  {item}
+                </option>
+              ))}
+            </select>
           </div>
 
+          {/* City / Locality */}
           <div className="sk-well flex items-center gap-3 px-4 py-3.5">
             <MapPin className="shrink-0 text-slate-400" size={20} />
 
@@ -164,6 +177,7 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
             />
           </div>
 
+          {/* Category */}
           <div className="sk-well flex items-center gap-3 px-4 py-3.5">
             <SlidersHorizontal className="shrink-0 text-slate-400" size={20} />
 
@@ -182,6 +196,7 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
             </select>
           </div>
 
+          {/* Search Button */}
           <button
             type="submit"
             className="sk-btn rounded-2xl px-8 py-3.5 text-sm"
@@ -194,6 +209,7 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
 
         <div className="sk-groove mt-6" />
 
+        {/* Popular Searches */}
         <div className="mt-4 flex flex-wrap items-center gap-x-2.5 gap-y-3 text-xs">
 
           <span className="sk-emboss-soft font-bold">
@@ -213,6 +229,7 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
 
         </div>
 
+        {/* Report Type */}
         <div className="mt-5 flex flex-wrap items-center justify-between gap-4">
 
           <div className="flex flex-wrap items-center gap-2">
@@ -247,6 +264,7 @@ function SearchPanel({ onSearch }: SearchPanelProps) {
 
           </div>
 
+          {/* Reset Filters */}
           <button
             type="button"
             onClick={handleReset}
