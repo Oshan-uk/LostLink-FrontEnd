@@ -226,7 +226,7 @@ function NotificationBell() {
             </div>
 
             {/* Notification List */}
-            <div className="max-h-[400px] overflow-y-auto">
+            <div className="max-h-100 overflow-y-auto">
 
               {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-12">
