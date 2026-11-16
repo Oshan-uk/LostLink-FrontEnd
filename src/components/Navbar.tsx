@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { useState } from "react";
+import { Link, NavLink } from "react-router-dom";
 
 import {
   Search,
@@ -8,27 +8,28 @@ import {
   LogOut,
   LayoutDashboard,
   UserRound,
-} from 'lucide-react'
+} from "lucide-react";
 
-import { useAuth } from '../hooks/useAuth'
+import { useAuth } from "../hooks/useAuth";
+import NotificationBell from "./NotificationBell";
 
 const linkBase =
-  'sk-emboss-soft rounded-xl px-4 py-2 text-sm font-bold transition-colors hover:text-cyan-700'
+  "sk-emboss-soft rounded-xl px-4 py-2 text-sm font-bold transition-colors hover:text-cyan-700";
 
 function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false);
 
-  const { user, isAuthenticated, isLoading, logout } = useAuth()
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
 
   const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-    `${linkBase} ${isActive ? 'sk-pressed' : ''}`
+    `${linkBase} ${isActive ? "sk-pressed" : ""}`;
 
-  const close = () => setMenuOpen(false)
+  const close = () => setMenuOpen(false);
 
   const handleLogout = () => {
-    logout()
-    close()
-  }
+    logout();
+    close();
+  };
 
   return (
     <header className="sk-metal sticky top-0 z-50">
@@ -36,8 +37,11 @@ function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 lg:px-8">
 
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-3" onClick={close}>
-
+        <Link
+          to="/"
+          className="flex items-center gap-3"
+          onClick={close}
+        >
           <span className="sk-gem flex h-11 w-11 items-center justify-center">
             <Search size={22} strokeWidth={2.5} />
           </span>
@@ -51,7 +55,6 @@ function Navbar() {
               RECONNECT WHAT MATTERS
             </span>
           </span>
-
         </Link>
 
         {/* Desktop Navigation */}
@@ -71,73 +74,84 @@ function Navbar() {
 
         </nav>
 
-        {/* Desktop Account Actions */}
-        <div className="hidden items-center gap-3 md:flex">
+        {/* Account Actions */}
+        <div className="flex items-center gap-3">
 
-          {!isLoading && (
-            isAuthenticated ? (
-              <>
-                <span className="sk-emboss-soft max-w-32 truncate text-sm font-bold">
-                  Hi, {user?.name}
-                </span>
-
-                <Link
-                  to="/profile"
-                  className="sk-btn rounded-xl px-4 py-2.5 text-sm"
-                >
-                  <UserRound size={17} />
-                  Profile
-                </Link>
-
-                <Link
-                  to="/dashboard"
-                  className="sk-btn sk-btn-steel rounded-xl px-4 py-2.5 text-sm"
-                >
-                  <LayoutDashboard size={17} />
-                  Dashboard
-                </Link>
-
-                <button
-                  type="button"
-                  onClick={handleLogout}
-                  className="sk-btn rounded-xl px-4 py-2.5 text-sm"
-                >
-                  <LogOut size={17} />
-                  Logout
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  className="sk-btn sk-btn-steel rounded-xl px-5 py-2.5 text-sm"
-                >
-                  Log In
-                </Link>
-
-                <Link
-                  to="/register"
-                  className="sk-btn rounded-xl px-5 py-2.5 text-sm"
-                >
-                  Get Started
-                </Link>
-              </>
-            )
+          {!isLoading && isAuthenticated && (
+            <NotificationBell />
           )}
 
-        </div>
+          {/* Desktop Account Actions */}
+          <div className="hidden items-center gap-3 md:flex">
 
-        {/* Mobile Menu Button */}
-        <button
-          type="button"
-          onClick={() => setMenuOpen((previous) => !previous)}
-          className="sk-btn sk-btn-steel flex h-11 w-11 items-center justify-center rounded-xl md:hidden"
-          aria-label={menuOpen ? 'Close navigation menu' : 'Open navigation menu'}
-          aria-expanded={menuOpen}
-          aria-controls="mobile-navigation"
-        >
-          {menuOpen ? <X size={22} /> : <Menu size={22} />}
-        </button>
+            {!isLoading && (
+              isAuthenticated ? (
+                <>
+                  <span className="sk-emboss-soft max-w-32 truncate text-sm font-bold">
+                    Hi, {user?.name}
+                  </span>
+
+                  <Link
+                    to="/profile"
+                    className="sk-btn rounded-xl px-4 py-2.5 text-sm"
+                  >
+                    <UserRound size={17} />
+                    Profile
+                  </Link>
+
+                  <Link
+                    to="/dashboard"
+                    className="sk-btn sk-btn-steel rounded-xl px-4 py-2.5 text-sm"
+                  >
+                    <LayoutDashboard size={17} />
+                    Dashboard
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={handleLogout}
+                    className="sk-btn rounded-xl px-4 py-2.5 text-sm"
+                  >
+                    <LogOut size={17} />
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="sk-btn sk-btn-steel rounded-xl px-5 py-2.5 text-sm"
+                  >
+                    Log In
+                  </Link>
+
+                  <Link
+                    to="/register"
+                    className="sk-btn rounded-xl px-5 py-2.5 text-sm"
+                  >
+                    Get Started
+                  </Link>
+                </>
+              )
+            )}
+
+          </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            type="button"
+            onClick={() => setMenuOpen((previous) => !previous)}
+            className="sk-btn sk-btn-steel flex h-11 w-11 items-center justify-center rounded-xl md:hidden"
+            aria-label={
+              menuOpen ? "Close navigation menu" : "Open navigation menu"
+            }
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
+          >
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
+          </button>
+
+        </div>
 
       </div>
 
@@ -146,8 +160,8 @@ function Navbar() {
         id="mobile-navigation"
         className={`overflow-hidden transition-all duration-300 md:hidden ${
           menuOpen
-            ? 'visible max-h-140 opacity-100'
-            : 'invisible max-h-0 opacity-0'
+            ? "visible max-h-140 opacity-100"
+            : "invisible max-h-0 opacity-0"
         }`}
       >
 
@@ -183,6 +197,7 @@ function Navbar() {
             isAuthenticated ? (
               <>
                 <div className="sk-well rounded-xl px-4 py-3 text-center">
+
                   <p className="sk-emboss-soft text-xs font-semibold">
                     SIGNED IN AS
                   </p>
@@ -190,6 +205,7 @@ function Navbar() {
                   <p className="sk-emboss mt-1 truncate font-bold">
                     {user?.name}
                   </p>
+
                 </div>
 
                 <Link
@@ -218,6 +234,7 @@ function Navbar() {
                   <LogOut size={17} />
                   Logout
                 </button>
+
               </>
             ) : (
               <>
@@ -245,7 +262,7 @@ function Navbar() {
       </div>
 
     </header>
-  )
+  );
 }
 
-export default Navbar
+export default Navbar;
