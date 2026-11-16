@@ -15,6 +15,7 @@ import ReportLost from './pages/ReportLost'
 import ReportFound from './pages/ReportFound'
 import ItemDetails from './pages/ItemDetails'
 import EditItem from "./pages/EditItem";
+import Profile from './pages/Profile'
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
 
           <Route element={<ProtectedRoute />}>
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/report-lost" element={<ReportLost />} />
             <Route path="/report-found" element={<ReportFound />} />
             <Route path="/items/:id/edit" element={<EditItem />} />
