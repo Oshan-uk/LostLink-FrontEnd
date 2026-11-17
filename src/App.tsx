@@ -1,21 +1,22 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
-import Navbar from './components/Navbar'
-import Footer from './components/Footer'
-import ProtectedRoute from './components/ProtectedRoute'
+import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-import { AuthProvider } from './context/AuthContext'
+import { AuthProvider } from "./context/AuthContext";
 
-import Home from './pages/Home'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Dashboard from './pages/dashboard/Dashboard'
-import NotFound from './pages/NotFound'
-import ReportLost from './pages/ReportLost'
-import ReportFound from './pages/ReportFound'
-import ItemDetails from './pages/ItemDetails'
+import Home from "./pages/Home";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Dashboard from "./pages/dashboard/Dashboard";
+import NotFound from "./pages/NotFound";
+import ReportLost from "./pages/ReportLost";
+import ReportFound from "./pages/ReportFound";
+import ItemDetails from "./pages/ItemDetails";
 import EditItem from "./pages/EditItem";
-import Profile from './pages/Profile'
+import Profile from "./pages/Profile";
+import AIChatbot from "./components/AIChatbot";
 
 function App() {
   return (
@@ -37,16 +38,18 @@ function App() {
             <Route path="/report-found" element={<ReportFound />} />
             <Route path="/items/:id/edit" element={<EditItem />} />
           </Route>
-          
+
           <Route path="/items/:id" element={<ItemDetails />} />
 
           <Route path="*" element={<NotFound />} />
         </Routes>
 
+        <AIChatbot />
+        
         <Footer />
       </BrowserRouter>
     </AuthProvider>
-  )
+  );
 }
 
-export default App
+export default App;

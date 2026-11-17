@@ -14,10 +14,7 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 
-import {
-  sendAIMessage,
-  type AIChatItem,
-} from "../services/ai.service";
+import { sendAIMessage, type AIChatItem } from "../services/ai.service";
 
 import "./AIChatbot.css";
 
@@ -81,16 +78,22 @@ const AIChatbot = () => {
       content: userMessage,
     };
 
-    setMessages((previous) => [
-      ...previous,
-      userChatMessage,
-    ]);
+    setMessages((previous) => [...previous, userChatMessage]);
 
     setMessage("");
     setIsLoading(true);
 
     try {
-      const response = await sendAIMessage(userMessage);
+      const conversationHistory = messages
+        .slice(1)
+        .filter((chat) => chat.role === "user" || chat.role === "assistant")
+        .slice(-10)
+        .map((chat) => ({
+          role: chat.role,
+          content: chat.content,
+        }));
+
+      const response = await sendAIMessage(userMessage, conversationHistory);
 
       const assistantMessage: ChatMessage = {
         id: crypto.randomUUID(),
@@ -99,10 +102,7 @@ const AIChatbot = () => {
         items: response.items ?? [],
       };
 
-      setMessages((previous) => [
-        ...previous,
-        assistantMessage,
-      ]);
+      setMessages((previous) => [...previous, assistantMessage]);
     } catch (error) {
       console.error("AI Chat Error:", error);
 
@@ -122,9 +122,7 @@ const AIChatbot = () => {
   };
 
   // Handle Enter key
-  const handleKeyDown = (
-    event: React.KeyboardEvent<HTMLInputElement>,
-  ) => {
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === "Enter" && !event.shiftKey) {
       event.preventDefault();
       void handleSendMessage();
@@ -137,8 +135,7 @@ const AIChatbot = () => {
       {
         id: "welcome",
         role: "assistant",
-        content:
-          "Hello again! 👋 What would you like to know about LostLink?",
+        content: "Hello again! 👋 What would you like to know about LostLink?",
       },
     ]);
 
@@ -147,7 +144,6 @@ const AIChatbot = () => {
 
   return (
     <div className="ll-ai-container">
-
       {/* Floating Chat Button */}
       {!isOpen && (
         <button
@@ -160,21 +156,16 @@ const AIChatbot = () => {
 
           <span className="ll-ai-button-pulse" />
 
-          <span className="ll-ai-floating-tooltip">
-            Ask LostLink AI
-          </span>
+          <span className="ll-ai-floating-tooltip">Ask LostLink AI</span>
         </button>
       )}
 
       {/* Chat Window */}
       {isOpen && (
         <div className="ll-ai-window">
-
           {/* Header */}
           <div className="ll-ai-header">
-
             <div className="ll-ai-header-info">
-
               <div className="ll-ai-avatar">
                 <Bot size={24} />
                 <span className="ll-ai-online-dot" />
@@ -188,11 +179,9 @@ const AIChatbot = () => {
                   Online Assistant
                 </p>
               </div>
-
             </div>
 
             <div className="ll-ai-header-actions">
-
               <button
                 type="button"
                 onClick={handleNewChat}
@@ -210,14 +199,11 @@ const AIChatbot = () => {
               >
                 <X size={20} />
               </button>
-
             </div>
-
           </div>
 
           {/* Chat Body */}
           <div className="ll-ai-body">
-
             {/* Welcome Badge */}
             <div className="ll-ai-welcome-badge">
               <Sparkles size={13} />
@@ -226,13 +212,11 @@ const AIChatbot = () => {
 
             {/* Messages */}
             <div className="ll-ai-messages">
-
               {messages.map((chatMessage) => (
                 <div
                   key={chatMessage.id}
                   className={`ll-ai-message ll-ai-${chatMessage.role}`}
                 >
-
                   {chatMessage.role === "assistant" && (
                     <div className="ll-ai-message-avatar">
                       <Bot size={17} />
@@ -240,103 +224,81 @@ const AIChatbot = () => {
                   )}
 
                   <div className="ll-ai-message-content">
-
                     <div className="ll-ai-message-bubble">
                       {chatMessage.content}
                     </div>
 
                     {/* Matching Item Cards */}
-                    {chatMessage.items &&
-                      chatMessage.items.length > 0 && (
-                        <div className="ll-ai-results">
+                    {chatMessage.items && chatMessage.items.length > 0 && (
+                      <div className="ll-ai-results">
+                        <div className="ll-ai-results-heading">
+                          <Package size={16} />
+                          <span>
+                            Matching Items ({chatMessage.items.length})
+                          </span>
+                        </div>
 
-                          <div className="ll-ai-results-heading">
-                            <Package size={16} />
-                            <span>
-                              Matching Items (
-                              {chatMessage.items.length}
-                              )
-                            </span>
-                          </div>
+                        {chatMessage.items.map((item) => (
+                          <div key={item.id} className="ll-ai-item-card">
+                            {item.imageUrl ? (
+                              <img
+                                src={item.imageUrl}
+                                alt={item.name}
+                                className="ll-ai-item-image"
+                              />
+                            ) : (
+                              <div className="ll-ai-item-placeholder">
+                                <Package size={25} />
+                              </div>
+                            )}
 
-                          {chatMessage.items.map((item) => (
-                            <div
-                              key={item.id}
-                              className="ll-ai-item-card"
-                            >
-
-                              {item.imageUrl ? (
-                                <img
-                                  src={item.imageUrl}
-                                  alt={item.name}
-                                  className="ll-ai-item-image"
-                                />
-                              ) : (
-                                <div className="ll-ai-item-placeholder">
-                                  <Package size={25} />
-                                </div>
-                              )}
-
-                              <div className="ll-ai-item-details">
-
-                                <div className="ll-ai-item-top">
-                                  <span
-                                    className={`ll-ai-item-type ${item.type}`}
-                                  >
-                                    {item.type}
-                                  </span>
-
-                                  <span className="ll-ai-item-category">
-                                    {item.category}
-                                  </span>
-                                </div>
-
-                                <h4>{item.name}</h4>
-
-                                <p>
-                                  <MapPin size={13} />
-                                  {[
-                                    item.city,
-                                    item.district,
-                                    item.province,
-                                  ]
-                                    .filter(Boolean)
-                                    .join(", ")}
-                                </p>
-
-                                <p>
-                                  <CalendarDays size={13} />
-                                  {new Date(
-                                    item.date,
-                                  ).toLocaleDateString()}
-                                </p>
-
-                                <Link
-                                  to={`/items/${item.id}`}
-                                  className="ll-ai-view-item"
-                                  onClick={() => setIsOpen(false)}
+                            <div className="ll-ai-item-details">
+                              <div className="ll-ai-item-top">
+                                <span
+                                  className={`ll-ai-item-type ${item.type}`}
                                 >
-                                  View Details
-                                  <ArrowUpRight size={14} />
-                                </Link>
+                                  {item.type}
+                                </span>
 
+                                <span className="ll-ai-item-category">
+                                  {item.category}
+                                </span>
                               </div>
 
+                              <h4>{item.name}</h4>
+
+                              <p>
+                                <MapPin size={13} />
+                                {[item.city, item.district, item.province]
+                                  .filter(Boolean)
+                                  .join(", ")}
+                              </p>
+
+                              <p>
+                                <CalendarDays size={13} />
+                                {new Date(item.date).toLocaleDateString()}
+                              </p>
+
+                              <Link
+                                to={`/items/${item.id}`}
+                                className="ll-ai-view-item"
+                                onClick={() => setIsOpen(false)}
+                              >
+                                View Details
+                                <ArrowUpRight size={14} />
+                              </Link>
                             </div>
-                          ))}
-
-                        </div>
-                      )}
-
+                          </div>
+                        ))}
+                      </div>
+                    )}
                   </div>
-
                 </div>
               ))}
 
               {/* Typing Indicator */}
               {isLoading && (
                 <div className="ll-ai-message ll-ai-assistant">
-
                   <div className="ll-ai-message-avatar">
                     <Bot size={17} />
                   </div>
@@ -346,18 +308,15 @@ const AIChatbot = () => {
                     <span />
                     <span />
                   </div>
-
                 </div>
               )}
 
               <div ref={messagesEndRef} />
-
             </div>
 
             {/* Suggested Questions */}
             {messages.length === 1 && !isLoading && (
               <div className="ll-ai-suggestions">
-
                 <p>Try asking me</p>
 
                 {suggestedQuestions.map((question) => (
@@ -372,17 +331,13 @@ const AIChatbot = () => {
                     {question}
                   </button>
                 ))}
-
               </div>
             )}
-
           </div>
 
           {/* Input Area */}
           <div className="ll-ai-input-area">
-
             <div className="ll-ai-input-wrapper">
-
               <input
                 ref={inputRef}
                 type="text"
@@ -403,24 +358,18 @@ const AIChatbot = () => {
                 aria-label="Send message"
               >
                 {isLoading ? (
-                  <LoaderCircle
-                    size={19}
-                    className="ll-ai-spin"
-                  />
+                  <LoaderCircle size={19} className="ll-ai-spin" />
                 ) : (
                   <Send size={18} />
                 )}
               </button>
-
             </div>
 
             <p className="ll-ai-disclaimer">
-              AI responses may not always be accurate.
-              Verify item details before taking action.
+              AI responses may not always be accurate. Verify item details
+              before taking action.
             </p>
-
           </div>
-
         </div>
       )}
     </div>
