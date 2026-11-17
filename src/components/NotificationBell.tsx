@@ -261,7 +261,7 @@ function NotificationBell() {
                       {/* Content */}
                       <div className="min-w-0 flex-1">
                         <div className="flex items-start justify-between gap-2">
-                          <h4 className="sk-emboss min-w-0 wrap-break-word text-sm font-extrabold wrap-anywhere">
+                          <h4 className="sk-emboss min-w-0 wrap-break-word text-sm font-extrabold">
                             {notification.title}
                           </h4>
 
@@ -270,7 +270,7 @@ function NotificationBell() {
                           )}
                         </div>
 
-                        <p className="sk-emboss-soft mt-1 min-w-0 wrap-break-word text-xs leading-relaxed wrap-anywhere">
+                        <p className="sk-emboss-soft mt-1 min-w-0 wrap-break-word text-xs leading-relaxed">
                           {notification.message}
                         </p>
 
