@@ -176,7 +176,7 @@ function NotificationBell() {
             onClick={() => setIsOpen(false)}
           />
 
-          <div className="sk-metal absolute right-0 top-14 z-50 w-[min(24rem,calc(100vw-2rem))] overflow-hidden rounded-2xl border border-slate-300/40 shadow-2xl">
+          <div className="sk-metal fixed right-3 top-20 z-50 w-[calc(100vw-1.5rem)] max-w-sm overflow-hidden rounded-2xl border border-slate-300/40 shadow-2xl sm:absolute sm:right-0 sm:top-14 sm:w-[min(24rem,calc(100vw-2rem))]">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-slate-400/30 px-4 py-4">
               <div>
@@ -218,7 +218,7 @@ function NotificationBell() {
             </div>
 
             {/* Notification List */}
-            <div className="max-h-100 overflow-y-auto">
+            <div className="max-h-[calc(100dvh-11rem)] overflow-y-auto overscroll-contain sm:max-h-100">
               {isLoading ? (
                 <div className="flex flex-col items-center justify-center py-12">
                   <LoaderCircle
@@ -261,7 +261,7 @@ function NotificationBell() {
                       {/* Content */}
                       <div className="min-w-0 flex-1">
                         <div className="flex items-start justify-between gap-2">
-                          <h4 className="sk-emboss text-sm font-extrabold">
+                          <h4 className="sk-emboss min-w-0 wrap-break-word text-sm font-extrabold wrap-anywhere">
                             {notification.title}
                           </h4>
 
@@ -270,7 +270,7 @@ function NotificationBell() {
                           )}
                         </div>
 
-                        <p className="sk-emboss-soft mt-1 text-xs leading-relaxed">
+                        <p className="sk-emboss-soft mt-1 min-w-0 wrap-break-word text-xs leading-relaxed wrap-anywhere">
                           {notification.message}
                         </p>
 
