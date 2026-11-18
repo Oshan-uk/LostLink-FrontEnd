@@ -17,11 +17,13 @@ import ItemDetails from "./pages/ItemDetails";
 import EditItem from "./pages/EditItem";
 import Profile from "./pages/Profile";
 import AIChatbot from "./components/AIChatbot";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
+      <ScrollToTop />
         <Navbar />
 
         <Routes>

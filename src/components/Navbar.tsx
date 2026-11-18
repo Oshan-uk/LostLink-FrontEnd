@@ -32,16 +32,10 @@ function Navbar() {
   };
 
   return (
-    <header className="sk-metal sticky top-0 z-50">
-
+    <header className="sticky top-3 z-50 mx-3 rounded-2xl border border-white/15 bg-[#ffff]/65 shadow-[0_8px_32px_rgba(0,0,0,0.3)] backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-3 lg:px-8">
-
         {/* Logo */}
-        <Link
-          to="/"
-          className="flex items-center gap-3"
-          onClick={close}
-        >
+        <Link to="/" className="flex items-center gap-3" onClick={close}>
           <span className="sk-gem flex h-11 w-11 items-center justify-center">
             <Search size={22} strokeWidth={2.5} />
           </span>
@@ -59,7 +53,6 @@ function Navbar() {
 
         {/* Desktop Navigation */}
         <nav className="hidden items-center gap-2 md:flex">
-
           <NavLink to="/" className={navLinkClass}>
             Home
           </NavLink>
@@ -71,21 +64,16 @@ function Navbar() {
           <a href="/#how-it-works" className={linkBase}>
             How It Works
           </a>
-
         </nav>
 
         {/* Account Actions */}
         <div className="flex items-center gap-3">
-
-          {!isLoading && isAuthenticated && (
-            <NotificationBell />
-          )}
+          {!isLoading && isAuthenticated && <NotificationBell />}
 
           {/* Desktop Account Actions */}
           <div className="hidden items-center gap-3 md:flex">
-
-            {!isLoading && (
-              isAuthenticated ? (
+            {!isLoading &&
+              (isAuthenticated ? (
                 <>
                   <span className="sk-emboss-soft max-w-32 truncate text-sm font-bold">
                     Hi, {user?.name}
@@ -132,9 +120,7 @@ function Navbar() {
                     Get Started
                   </Link>
                 </>
-              )
-            )}
-
+              ))}
           </div>
 
           {/* Mobile Menu Button */}
@@ -150,9 +136,7 @@ function Navbar() {
           >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
-
         </div>
-
       </div>
 
       {/* Mobile Navigation */}
@@ -164,11 +148,9 @@ function Navbar() {
             : "invisible max-h-0 opacity-0"
         }`}
       >
-
         <div className="sk-groove" />
 
         <div className="flex flex-col gap-4 px-5 pb-6 pt-5">
-
           <NavLink
             to="/"
             onClick={close}
@@ -193,11 +175,10 @@ function Navbar() {
             How It Works
           </a>
 
-          {!isLoading && (
-            isAuthenticated ? (
+          {!isLoading &&
+            (isAuthenticated ? (
               <>
                 <div className="sk-well rounded-xl px-4 py-3 text-center">
-
                   <p className="sk-emboss-soft text-xs font-semibold">
                     SIGNED IN AS
                   </p>
@@ -205,7 +186,6 @@ function Navbar() {
                   <p className="sk-emboss mt-1 truncate font-bold">
                     {user?.name}
                   </p>
-
                 </div>
 
                 <Link
@@ -234,7 +214,6 @@ function Navbar() {
                   <LogOut size={17} />
                   Logout
                 </button>
-
               </>
             ) : (
               <>
@@ -254,13 +233,9 @@ function Navbar() {
                   Get Started
                 </Link>
               </>
-            )
-          )}
-
+            ))}
         </div>
-
       </div>
-
     </header>
   );
 }

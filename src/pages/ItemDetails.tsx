@@ -373,9 +373,9 @@ function ItemDetails() {
 
                       {/* Match Progress */}
 
-                      <div className="h-2 overflow-hidden rounded-full bg-white/10">
+                      <div className="h-2 w-full overflow-hidden rounded-full bg-slate-400/30 shadow-inner">
                         <div
-                          className="h-full rounded-full bg-cyan-400 transition-all"
+                          className="h-full rounded-full bg-cyan-400 transition-all duration-500"
                           style={{
                             width: `${match.matchScore}%`,
                           }}
