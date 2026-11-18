@@ -1,4 +1,5 @@
 import { useState } from "react";
+import backgroundVideo from "../assets/videos/lostlink-background.mp4";
 
 import {
   Smartphone,
@@ -172,9 +173,27 @@ function Home() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="sk-hero relative">
-        <div className="mx-auto max-w-7xl px-5 pb-32 pt-20 sm:pb-36 sm:pt-24 lg:px-8 lg:pb-40 lg:pt-32">
+      <section className="sk-hero relative isolate overflow-hidden">
+
+        {/* Background Video */}
+        <video
+          className="absolute inset-0 z-0 h-full w-full scale-110 object-cover blur-md"
+          src={backgroundVideo}
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          aria-hidden="true"
+        />
+
+        {/* Dark Overlay */}
+        <div className="absolute inset-0 z-10 bg-[#06041C]/20" />
+
+        {/* Hero Content */}
+        <div className="relative z-20 mx-auto max-w-7xl px-5 pb-32 pt-20 sm:pb-36 sm:pt-24 lg:px-8 lg:pb-40 lg:pt-32">
           <div className="mx-auto max-w-3xl text-center">
+
             <div className="sk-well-dark mb-8 inline-flex max-w-full items-center gap-2.5 rounded-full px-4 py-2 text-[11px] font-bold tracking-wide text-cyan-300 sm:text-xs">
               <span className="sk-led" />
               RECONNECTING PEOPLE ACROSS SRI LANKA
@@ -183,13 +202,15 @@ function Home() {
             <h1 className="sk-title-dark font-['Plus_Jakarta_Sans'] text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl lg:text-6xl">
               Lost Something?
               <br />
-              <span className="text-cyan-300">Let's Find It Together.</span>
+              <span className="text-cyan-300">
+                Let's Find It Together.
+              </span>
             </h1>
 
-            <p className="mx-auto mt-7 max-w-2xl text-base leading-8 text-slate-300 sm:text-lg">
-              A smarter way to report lost items, discover found belongings and
-              reconnect people across Sri Lanka.
-            </p>
+            <p className="mx-auto mt-7 max-w-2xl text-base leading-8 text-slate-200 sm:text-lg [text-shadow:0_1px_0_#06eff6,0_-1px_1px_#020617,0_0_8px_rgba(6,239,246,0.35)]">
+  A smarter way to report lost items, discover found belongings and
+  reconnect people across Sri Lanka.
+</p>
 
             <div className="mt-10 flex flex-col justify-center gap-5 sm:flex-row">
               <Link
@@ -216,6 +237,7 @@ function Home() {
                 </div>
               ))}
             </div>
+
           </div>
         </div>
       </section>
