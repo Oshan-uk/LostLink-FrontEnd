@@ -52,7 +52,7 @@ function Footer() {
               <span className="sk-well-dark flex h-9 w-9 shrink-0 items-center justify-center">
                 <Mail size={16} className="text-cyan-400" />
               </span>
-              <span className="break-all">support@lostlink.lk</span>
+              <span className="break-all">oshanudeesha2004@gmail.com</span>
             </div>
             <div className="flex items-center gap-3">
               <span className="sk-well-dark flex h-9 w-9 shrink-0 items-center justify-center">
