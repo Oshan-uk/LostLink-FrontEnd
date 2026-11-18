@@ -239,11 +239,15 @@ Potential future improvements include:
 
 ## 🎥 Project Demonstration
 
-Explore the complete LostLink application through the demonstration video.
+Watch the complete LostLink application walkthrough, showcasing its features, functionality, and user experience.
 
-**▶️ Watch the LostLink Project Demo**
+<div align="center">
 
-[Click here to watch the demonstration video](https://youtu.be/wlZ4HAUSiRE?si=-X_yXI5s43TMbqPQ)
+[![LostLink Project Demo](https://img.youtube.com/vi/wlZ4HAUSiRE/maxresdefault.jpg)](https://youtu.be/wlZ4HAUSiRE)
+
+**▶️ Watch LostLink – Complete Project Demonstration**
+
+</div>
 
 The demonstration covers the application's user interface, authentication, item reporting, search functionality, automatic matching mechanism, notifications, dashboard, and AI assistant.
 
