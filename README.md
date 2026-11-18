@@ -265,7 +265,7 @@ Building practical software solutions through modern web technologies.
 
 [![GitHub](https://img.shields.io/badge/GitHub-Oshan--uk-181717?style=for-the-badge&logo=github)](https://github.com/Oshan-uk)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Oshan%20Udeesha-0A66C2?style=for-the-badge&logo=linkedin)](https://www.linkedin.com/in/oshan-udeesha-a380b03a8/)
-[![YouTube](https://img.shields.io/badge/YouTube-CodeCraft%20with%20Oshan-FF0000?style=for-the-badge&logo=youtube)](https://www.youtube.com/@codecraftwithoshan)
+[![YouTube](https://img.shields.io/badge/YouTube-Oshan%20Udeesha%20Official-FF0000?style=for-the-badge&logo=youtube)](https://www.youtube.com/@oshanudeeshaofficial)
 
 </div>
 
